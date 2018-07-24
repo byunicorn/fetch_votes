@@ -5,6 +5,7 @@ class ProdWebpackConfig extends BaseWebpackConfig {
     constructor() {
         super();
 
+        this.mode = "production";
         this.extractTextPlugin = new ExtractTextWebpackPlugin("style.css");
         this.styleLoader = ExtractTextWebpackPlugin.extract([
             {
@@ -25,6 +26,7 @@ class ProdWebpackConfig extends BaseWebpackConfig {
     get config() {
         let base = this.defaultConfig;
 
+        base.mode = this.mode;
         base.plugins.push(this.extractTextPlugin);
         return base;
     }

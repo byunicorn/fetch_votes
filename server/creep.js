@@ -2,7 +2,7 @@ const request = require("request");
 const _ = require("lodash");
 const path = require("path");
 const fs = require("fs");
-const { QUERY_URI, QUERY_INTERVAL, QUERY_LOG } = require("./const");
+const { QUERY_URI, QUERY_INTERVAL, QUERY_LOG, TOP_COUNT } = require("./const");
 
 const log = path.resolve(__dirname, QUERY_LOG);
 
@@ -20,10 +20,24 @@ const query = () => {
             let record = { timestamp: Math.floor(Date.now() / 1000) };
             let raw = _.get(body, "data.cards.1.card_group", []);
             let filtered = _.filter(raw, item => item.card_type === 52);
+            let votes = [];
             _.map(filtered, row => {
                 for (let item of row.items) {
-                    record[item.title] = parseFloat(_.replace(item.price2, reg, ""));
+                    let num = parseFloat(_.replace(item.price2, reg, ""));
+                    votes.push({
+                        num,
+                        name: item.title
+                    });
                 }
+            });
+
+            if (TOP_COUNT < filtered.length) {
+                votes = _.sortBy(votes, "num");
+                votes = _.slice(votes, votes.length - TOP_COUNT);
+            }
+
+            _.map(votes, vote => {
+                record[vote.name] = vote.num;
             });
 
             records.push(record);

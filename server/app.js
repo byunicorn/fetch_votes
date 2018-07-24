@@ -1,6 +1,7 @@
 const express = require("express");
-const creep = require("./creep");
 const _ = require("lodash");
+const path = require("path");
+const creep = require("./creep");
 let { QUERY_INTERVAL } = require("./const");
 QUERY_INTERVAL = Math.floor(QUERY_INTERVAL / 1000);
 
@@ -32,5 +33,7 @@ app.get("/votes", (req, res) => {
         )
     });
 });
+
+app.use(express.static(path.resolve(__dirname, "../dist")));
 
 app.listen(3000, () => console.log("wxy app start!"));

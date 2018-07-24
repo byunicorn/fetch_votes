@@ -84,12 +84,18 @@ class Votes extends Component {
             z = d3.scaleOrdinal(d3.schemeCategory10);
 
         const parseTime = d3.timeParse("%s");
+        const formatTime = d3.timeFormat("%m-%d %H:%M");
         const line = d3
             .line()
             .x(d => x(d.x))
             .y(d => y(d.y));
         const candidateMap = {};
         const circles = [];
+        const tooltipContainer = d3
+            .select("body")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
         let minY = Number.MAX_VALUE,
             maxY = 0,
             minX = data[0] ? parseTime(data[0].timestamp) : 0,
@@ -98,15 +104,13 @@ class Votes extends Component {
         data.map(({ timestamp, ...candidates }) => {
             for (let key in candidates) {
                 let arr = candidateMap[key] || [];
-                arr.push({
-                    x: parseTime(timestamp),
-                    y: candidates[key]
-                });
-                circles.push({
+                let point = {
                     x: parseTime(timestamp),
                     y: candidates[key],
                     id: key
-                });
+                };
+                arr.push(point);
+                circles.push(point);
                 candidateMap[key] = arr;
                 minY = Math.min(minY, candidates[key]);
                 maxY = Math.max(maxY, candidates[key]);
@@ -158,10 +162,28 @@ class Votes extends Component {
             .data(circles)
             .enter()
             .append("circle")
+            .attr("class", "circle")
             .attr("cx", d => x(d.x))
             .attr("cy", d => y(d.y))
             .attr("r", 3)
-            .style("fill", d => z(d.id));
+            .style("fill", d => z(d.id))
+            .on("mouseover", d => {
+                tooltipContainer
+                    .transition()
+                    .duration(200)
+                    .style("opacity", 0.9);
+                tooltipContainer
+                    .html(`<div>${formatTime(d.x)}</div><div>${d.y}</div>`)
+                    .style("font-size", "10px")
+                    .style("left", `${d3.event.pageX}px`)
+                    .style("top", `${d3.event.pageY - 20}px`);
+            })
+            .on("mouseout", d => {
+                tooltipContainer
+                    .transition()
+                    .duration(200)
+                    .style("opacity", 0);
+            });
     };
 
     fetch = () => {

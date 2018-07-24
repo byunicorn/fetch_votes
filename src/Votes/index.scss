@@ -6,4 +6,13 @@
         stroke: steelblue;
         stroke-width: 1.5px;
     }
+
+    .circle {
+        cursor: pointer;
+    }
+}
+
+.tooltip {
+    position: absolute;
+    background: #f2f2f2;
 }

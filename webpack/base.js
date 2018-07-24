@@ -6,7 +6,7 @@ class WebpackBaseConfig {
     constructor() {
         this.srcDir = path.resolve(__dirname, "../src");
         this.distDir = path.resolve(__dirname, "../dist");
-        this.vendor = ["moment", "axios", "react", "react-dom"];
+        this.vendor = ["babel-polyfill", "moment", "axios", "react", "react-dom"];
         this.htmlTemplate = path.resolve(this.srcDir, "index.html");
 
         this.styleLoader = [

@@ -5,10 +5,12 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --open --env.dev",
-    "server": "node server/app.js"
+    "server": "node server/app.js",
+    "build": "webpack --env.prod --progress"
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
     "d3": "^5.5.0",
     "moment": "^2.22.2",
     "react": "^16.4.1",
